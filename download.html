@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShadeSync Download Kit</title>
+  <style>
+    :root { --bg:#020617; --card:#0f172a; --text:#f8fafc; --muted:#94a3b8; --accent:#f97316; }
+    * { box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); display:grid; place-items:center; padding:24px; }
+    .card { width:min(740px, 100%); border:1px solid #334155; border-radius:20px; padding:22px; background:var(--card); }
+    h1 { margin:0 0 8px; }
+    p { margin:0 0 16px; color:var(--muted); }
+    .list { display:grid; gap:10px; }
+    a { display:block; text-decoration:none; color:var(--text); border:1px solid #475569; border-radius:12px; padding:12px 14px; }
+    a:hover { border-color:#64748b; }
+    .quick { display:grid; gap:10px; margin: 14px 0 18px; }
+    .btn {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      border-radius:999px;
+      padding:14px 16px;
+      font-weight:700;
+      font-size:16px;
+    }
+    .btn-open {
+      background: linear-gradient(135deg, var(--accent), #facc15);
+      color:#111827;
+      border:0;
+    }
+    .btn-open:hover { filter:brightness(1.05); }
+    .btn-download {
+      color:var(--text);
+      border:1px solid #64748b;
+      background:#0b1220;
+    }
+    .btn-download:hover { border-color:#94a3b8; }
+    .tip { margin-top:14px; font-size:13px; color:var(--muted); }
+    strong { color:#fdba74; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Download ShadeSync Mock Kit</h1>
+    <p>Use the big button below to open your website right away.</p>
+
+    <div class="quick">
+      <a class="btn btn-open" href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/nadiacortes206-creator/ShadeSyncco/main/index.html" target="_blank" rel="noopener noreferrer">Open My Website</a>
+      <a class="btn btn-open" href="https://cdn.jsdelivr.net/gh/nadiacortes206-creator/ShadeSyncco@main/index.html" target="_blank" rel="noopener noreferrer">Open My Website (Backup Link)</a>
+      <a class="btn btn-download" href="https://github.com/nadiacortes206-creator/ShadeSyncco/archive/refs/heads/main.zip" target="_blank" rel="noopener noreferrer">Download Full Project ZIP</a>
+    </div>
+
+    <p>Or download individual files below.</p>
+
+    <div class="list">
+      <a href="https://raw.githubusercontent.com/nadiacortes206-creator/ShadeSyncco/main/index.html" target="_blank" rel="noopener noreferrer"><strong>Open website file</strong> — index.html</a>
+      <a href="https://raw.githubusercontent.com/nadiacortes206-creator/ShadeSyncco/main/promo-video.html" target="_blank" rel="noopener noreferrer"><strong>Open video page file</strong> — promo-video.html</a>
+      <a href="https://raw.githubusercontent.com/nadiacortes206-creator/ShadeSyncco/main/assets/fake-promo-video.svg" target="_blank" rel="noopener noreferrer"><strong>Open fake promo video asset</strong> — fake-promo-video.svg</a>
+      <a href="https://raw.githubusercontent.com/nadiacortes206-creator/ShadeSyncco/main/README.md" target="_blank" rel="noopener noreferrer"><strong>Open project notes</strong> — README.md</a>
+    </div>
+
+    <p class="tip">Tip: If you want one ZIP file, open this repo on GitHub and click <strong>Code → Download ZIP</strong>.</p>
+  </main>
+</body>
+</html>

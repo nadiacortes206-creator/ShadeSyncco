@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShadeSync – Bias‑Corrected Virtual Try‑On</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      /* TODO: swap these for your pitch‑deck colors */
+      --primary: #1E1B4B;   /* deep indigo example [web:7] */
+      --accent:  #F97316;   /* warm orange accent example [web:7] */
+      --bg:      #0F172A;   /* dark background example [web:7] */
+      --text:    #F9FAFB;
+      --muted:   #9CA3AF;
+      --radius:  18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent),
+                  radial-gradient(circle at bottom right, rgba(129, 140, 248, 0.18), transparent),
+                  var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px 16px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1120px;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.65),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      padding: 32px 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 24px 18px;
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 25%, #FDE68A, #F97316);
+      box-shadow: 0 0 0 5px rgba(248, 250, 252, 0.04);
+    }
+
+    .title {
+      font-size: clamp(32px, 4vw, 42px);
+      line-height: 1.05;
+      margin-top: 16px;
+      margin-bottom: 14px;
+      letter-spacing: -0.035em;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #F97316, #FACC15);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--muted);
+      max-width: 36rem;
+      margin-bottom: 20px;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .pill {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 20px;
+      background: linear-gradient(135deg, var(--accent), #FACC15);
+      color: #111827;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 14px 30px rgba(248, 181, 0, 0.4);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(248, 181, 0, 0.55);
+      filter: brightness(1.02);
+    }
+
+    .btn-ghost {
+      border-radius: 999px;
+      padding: 10px 18px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.12s ease-out, border-color 0.12s ease-out;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(248, 250, 252, 0.45);
+    }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .right {
+      position: relative;
+      border-radius: 24px;
+      background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.06), transparent),
+                  linear-gradient(135deg, rgba(37, 99, 235, 0.34), rgba(15, 23, 42, 0.96));
+      padding: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      overflow: hidden;
+    }
+
+    .right-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .mock-wrapper {
+      display: grid;
+      grid-template-columns: 1.05fr 1.1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .swatch-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.8);
+    }
+
+    .swatch--too-light  { background: #F9D9C7; }
+    .swatch--too-warm   { background: #C97A48; }
+    .swatch--too-cool   { background: #A66A6F; }
+    .swatch--correct    { background: #8C5C46; box-shadow: 0 0 0 2px rgba(249, 250, 251, 0.35); }
+
+    .panel-text {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .face {
+      margin-top: 4px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 30% 20%, rgba(248, 250, 252, 0.12), transparent),
+                  linear-gradient(135deg, #4B5563, #0F172A);
+      position: relative;
+      padding: 18px 12px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12px;
+    }
+
+    .avatar {
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 30% 15%, #FDE68A, transparent),
+        radial-gradient(circle at 60% 80%, #F97316, transparent),
+        linear-gradient(145deg, #1F2937, #020617);
+      min-height: 140px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .avatar-chip {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(248, 250, 252, 0.16);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .avatar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22C55E;
+    }
+
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .metric {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .metric strong {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .bar {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      position: absolute;
+      inset: 0;
+      transform-origin: left;
+      background: linear-gradient(90deg, var(--accent), #4ADE80);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--muted);
+    }
+
+    .gap-tag {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(248, 113, 113, 0.12);
+      color: #FCA5A5;
+      border: 1px solid rgba(248, 113, 113, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <!-- LEFT: Copy from your pitch -->
+    <section>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        ShadeSync • Bias‑Corrected Virtual Try‑On
+      </div>
+
+      <h1 class="title">
+        Inclusive virtual try‑on<br />
+        that your customers can <span>actually trust</span>.
+      </h1>
+
+      <p class="subtitle">
+        Our website showcases visuals of how our bias‑corrected virtual try‑on technology will appear on a brand’s platform.
+        We highlight the gap in beauty tech for consumers and demonstrate, through interactive demos, exactly how ShadeSync solves it.
+        Each page is designed to be simple, inclusive, and action‑oriented so brands immediately understand our mission and why ShadeSync is essential for their platforms.
+      </p>
+
+      <div class="pill-list">
+        <div class="pill">Bias‑corrected shade matching</div>
+        <div class="pill">Built for overlooked skin tones</div>
+        <div class="pill">Drop‑in widget for any PDP</div>
+        <div class="pill">Analytics your CX team can use</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary">
+          Book a 15‑min demo →
+        </button>
+        <button class="btn-ghost">
+          View live try‑on preview
+        </button>
+      </div>
+      <p class="footnote">
+        Designed for beauty brands that want fewer returns, higher confidence, and a truly inclusive shopping journey. [web:9][web:13]
+      </p>
+    </section>
+
+    <!-- RIGHT: “How it looks on your site” mock -->
+    <section class="right" aria-label="ShadeSync integration preview">
+      <span class="gap-tag">Beauty tech gap → solved</span>
+
+      <p class="right-label">
+        How ShadeSync can appear on your product detail page.
+      </p>
+
+      <div class="mock-wrapper">
+        <!-- Left panel: Before -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>Before: biased try‑on</span>
+            <span style="font-size:11px; color:#FCA5A5;">High mismatch risk</span>
+          </div>
+          <div class="swatch-row">
+            <span class="swatch swatch--too-light"></span>
+            <span class="swatch swatch--too-warm"></span>
+            <span class="swatch swatch--too-cool"></span>
+          </div>
+          <p class="panel-text">
+            Static shade grids and generic models leave deeper and nuanced undertones under‑served, leading to guesswork, cart abandonment, and costly returns. [web:2][web:15]
+          </p>
+        </div>
+
+        <!-- Right panel: After -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>After: ShadeSync overlay</span>
+            <span style="font-size:11px; color:#6EE7B7;">Bias‑corrected match</span>
+          </div>
+          <div class="swatch-row">
+            <span class="swatch swatch--correct"></span>
+            <span class="swatch swatch--correct"></span>
+            <span class="swatch swatch--correct"></span>
+          </div>
+          <p class="panel-text">
+            ShadeSync adapts to real skin behavior and inclusive shade libraries, then renders a preview that holds up in daylight and on diverse complexions. [web:2][web:9]
+          </p>
+        </div>
+      </div>
+
+      <div class="face">
+        <div class="avatar">
+          <div class="avatar-chip">
+            <span class="avatar-dot"></span>
+            Matched in under 3s
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span>Shade confidence</span>
+            <span><strong>+38%</strong></span>
+          </div>
+          <div class="bar">
+            <div class="bar-fill" style="transform: scaleX(0.78);"></div>
+          </div>
+
+          <div class="metric">
+            <span>Return rate on complexion</span>
+            <span><strong>−21%</strong></span>
+          </div>
+          <div class="bar">
+            <div class="bar-fill" style="transform: scaleX(0.48);"></div>
+          </div>
+
+          <div class="chip-row">
+            <span class="chip">Works with your existing PDP</span>
+            <span class="chip">Inclusive model gallery</span>
+            <span class="chip">Privacy‑first, no raw photos stored</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

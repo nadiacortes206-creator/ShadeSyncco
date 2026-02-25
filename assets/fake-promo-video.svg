@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="ShadeSync promo visual">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#FACC15"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="1080" cy="120" r="180" fill="#F97316" opacity="0.14"/>
+  <circle cx="180" cy="580" r="220" fill="#818CF8" opacity="0.16"/>
+
+  <text x="90" y="170" fill="#F9FAFB" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="700">
+    ShadeSync Demo Reel
+  </text>
+  <text x="90" y="220" fill="#9CA3AF" font-family="Segoe UI, Arial, sans-serif" font-size="28">
+    Bias-corrected virtual try-on preview
+  </text>
+
+  <rect x="90" y="290" width="1100" height="300" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="130" y="345" fill="#9CA3AF" font-family="Segoe UI, Arial, sans-serif" font-size="22">Before → After Match Confidence</text>
+
+  <rect x="130" y="390" width="480" height="20" rx="10" fill="#1F2937"/>
+  <rect x="130" y="390" width="290" height="20" rx="10" fill="#FB7185"/>
+  <text x="620" y="407" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="18">Legacy try-on: 58%</text>
+
+  <rect x="130" y="450" width="480" height="20" rx="10" fill="#1F2937"/>
+  <rect x="130" y="450" width="420" height="20" rx="10" fill="url(#accent)"/>
+  <text x="620" y="467" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="18">ShadeSync: 87%</text>
+
+  <rect x="130" y="510" width="480" height="20" rx="10" fill="#1F2937"/>
+  <rect x="130" y="510" width="360" height="20" rx="10" fill="#4ADE80"/>
+  <text x="620" y="527" fill="#86EFAC" font-family="Segoe UI, Arial, sans-serif" font-size="18">Returns reduction: 75% target confidence</text>
+
+  <circle cx="1070" cy="440" r="68" fill="#111827" stroke="#475569"/>
+  <polygon points="1050,405 1115,440 1050,475" fill="#F9FAFB"/>
+
+  <text x="90" y="660" fill="#64748B" font-family="Segoe UI, Arial, sans-serif" font-size="20">
+    Placeholder visual you can export in slides or attach with your demo deck.
+  </text>
+</svg>
